@@ -14,6 +14,8 @@ for address, dirs, files in folders:
             url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + filename
             response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
         else:
-            url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + address.replace(sys.argv[1] + '/','') + '/' + filename
-            response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
+            url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + address.replace(sys.argv[1],'') + '/' + filename
+#            print(address.replace(sys.argv[1],''))
+            print(url)
+            #response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
                
