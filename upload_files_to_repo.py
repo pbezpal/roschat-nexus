@@ -5,9 +5,6 @@ import os,sys,requests
 folders=[]
 auth = ('jenkins','Rosch@tBuild')
 
-if sys.argv[2] == 'roschat-sources':
-    url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + filename
-
 for result in os.walk(sys.argv[1]):
     folders.append(result)
 
