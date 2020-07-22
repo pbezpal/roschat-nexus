@@ -10,12 +10,12 @@ for result in os.walk(sys.argv[1]):
 
 for address, dirs, files in folders:
     for filename in files:
-        if not sys.argv[2] in 'roschat-client':
-            url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + filename
-            response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
-        elif sys.argv[2] == 'roschat-sources':
+        if sys.argv[2] == 'roschat-sources':
             if filename in 'src.tar.gz':
                url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + sys.argv[4] + '/' + filename
+        elif not sys.argv[2] in 'roschat-client':
+            url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + filename
+            response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
         else:
             url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + address.replace(sys.argv[1],'') + '/' + filename
             response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
