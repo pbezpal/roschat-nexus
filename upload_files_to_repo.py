@@ -13,6 +13,7 @@ for address, dirs, files in folders:
         if sys.argv[2] == 'roschat-sources':
             if filename in 'src.tar.gz':
                url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + sys.argv[4] + '/' + filename
+               response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
         elif not sys.argv[2] in 'roschat-client':
             url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + filename
             response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
