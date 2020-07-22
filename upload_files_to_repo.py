@@ -5,6 +5,9 @@ import os,sys,requests
 folders=[]
 auth = ('jenkins','Rosch@tBuild')
 
+if sys.argv[2] == 'roschat-sources':
+    url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + filename
+
 for result in os.walk(sys.argv[1]):
     folders.append(result)
 
@@ -13,9 +16,10 @@ for address, dirs, files in folders:
         if not sys.argv[2] in 'roschat-client':
             url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + filename
             response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
+        elif sys.argv[2] == 'roschat-sources':
+            if filename in 'src.tar.gz':
+               url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + sys.argv[4] + '/' + filename
         else:
             url = 'http://10.10.199.217:8080/repository/' + sys.argv[2] + '/' + sys.argv[3] + '/' + address.replace(sys.argv[1],'') + '/' + filename
-#            print(address.replace(sys.argv[1],''))
-            print(url)
-            #response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
+            response = requests.put(url, data=open(address + '/' + filename, 'rb'), auth=auth)
                
