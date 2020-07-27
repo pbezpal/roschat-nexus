@@ -171,10 +171,8 @@ class TransferAssets:
 
             ver = input('\r\nSelect version (enter number): ')
             if ver.isnumeric():
-                print('TEST1 ' + str(i))
                 if 0 < int(ver) <= i:
                     ver = int(ver) - 1
-                    print('TEST2')
                     break
             elif ver == 'q':
                 exit(0)
