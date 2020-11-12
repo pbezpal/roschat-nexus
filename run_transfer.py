@@ -26,7 +26,7 @@ auth: list = None
 
 colorama.init()
 
-print('\r\nPlease, enter login and password')
+print('\r\nPlease, enter login and password for auth to nexus')
 i = 0
 while i < 3:
     login = input('\r\nLogin: ')
