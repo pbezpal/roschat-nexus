@@ -12,6 +12,8 @@ except ImportError:
     os.system('pip3 install colorama')
 
 repository: str = None
+repo_first: str = None
+type_repo: str = None
 repos: list = []
 assets: list = []
 paths: list = []
@@ -23,6 +25,7 @@ temp_dir: str = 'temp'
 base_url: str = 'http://10.10.199.217:8080'
 repo_response: requests = None
 auth: list = None
+repo: str = ''
 
 colorama.init()
 
@@ -56,12 +59,30 @@ while True:
     print('q: Quit')
     project = input('\r\nSelect project (enter number): ')
     if project.isnumeric():
-        repository = repos[int(project) - 1]
-        break
+        if int(project) > 0 and int(project) <= len(repos):
+           repository = repos[int(project) - 1].replace('.pre-release', '')
+           break
     elif project == 'q':
         exit(0)
 
-transfer = TransferAssets(base_url, repository, auth, temp_dir)
+while True:
+    print('\r\nList type project: \n')
+    print('1. develop ')
+    print('2. pre-release')
+
+    print('q: Quit')
+    type = input('\r\nSelect type project (enter number): ')
+    if type.isnumeric():
+        if int(type) > 0 and int(type) < 3:
+           if int(type) == 1:
+              type_repo = '.develop'
+           else:
+              type_repo = '.pre-release'
+           break
+    elif project == 'q':
+        exit(0)
+
+transfer = TransferAssets(base_url, repository, type_repo, auth, temp_dir)
 
 if os.path.exists(temp_dir):
     transfer.delete_temp_folder()
