@@ -62,9 +62,9 @@ class TransferAssets:
     def delete_asset(self, url: str, status: int):
         del_response = requests.delete(url, auth=self.auth)
         if del_response.status_code == status:
-            print(colorama.Fore.GREEN + '\r\nSuccess\r\n')
+            print(colorama.Fore.GREEN + 'Success\r\n')
         else:
-            print('\r\nCan\'t delete ' + url + ' from repository ' + self.repository + self.type)
+            print(colorama.Fore.GREEN + 'FAILED\r\n')
             exit(0)
 
     def get_assets(self, token):
@@ -98,9 +98,9 @@ class TransferAssets:
             os.makedirs(folder)
         data = wget.download(url, out=folder, bar=bar_progress)
         if not data is None:
-            print(colorama.Fore.GREEN + ' SUCCESS')
+            print(colorama.Fore.GREEN + 'SUCCESS\r\n')
         else:
-            print(colorama.Fore.RED + ' FAILED')
+            print(colorama.Fore.RED + 'FAILED\r\n')
             exit(0)
 
     def upload_assets_to_release(self):
