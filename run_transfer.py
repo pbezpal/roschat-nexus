@@ -26,6 +26,9 @@ base_url: str = 'http://10.10.199.217:8080'
 repo_response: requests = None
 auth: list = None
 repo: str = ''
+auth: list = None
+login: str = None
+password: str = None
 
 colorama.init()
 
@@ -34,12 +37,16 @@ i = 0
 while i < 3:
     login = input('\r\nLogin: ')
     password = getpass.getpass('Password: ')
-    auth = (login, password)
-    repo_response = requests.get(base_url + '/service/rest/v1/repositories', auth=auth)
-    if repo_response.status_code == 401:
+    if login == "" or password == "":
         print('\r\nWrong login or password, please try again')
     else:
-        break
+        auth = (login, password)
+        repo_response = requests.get(base_url + '/service/rest/v1/repositories', auth=auth)
+        print(repo_response.status_code)
+        if repo_response.status_code == 401:
+            print('\r\nWrong login or password, please try again')
+        else:
+            break
     i = i + 1
 else:
     print('\r\nYou entered the wrong password 3 times. Permission denied.')
@@ -59,9 +66,9 @@ while True:
     print('q: Quit')
     project = input('\r\nSelect project (enter number): ')
     if project.isnumeric():
-        if int(project) > 0 and int(project) <= len(repos):
-           repository = repos[int(project) - 1].replace('.pre-release', '')
-           break
+        if 0 < int(project) <= i:
+            repository = repos[int(project) - 1].replace('.pre-release', '')
+            break
     elif project == 'q':
         exit(0)
 
@@ -73,12 +80,12 @@ while True:
     print('q: Quit')
     type = input('\r\nSelect type project (enter number): ')
     if type.isnumeric():
-        if int(type) > 0 and int(type) < 3:
-           if int(type) == 1:
-              type_repo = '.develop'
-           else:
-              type_repo = '.pre-release'
-           break
+        if 0 < int(type) < 3:
+            if int(type) == 1:
+                type_repo = '.develop'
+            else:
+                type_repo = '.pre-release'
+            break
     elif project == 'q':
         exit(0)
 
