@@ -93,7 +93,7 @@ class TransferAssets:
 
     @staticmethod
     def get_asset(data_name, url, folder):
-        print('\r\nDownload ' + data_name + ' from repository...', sep="; ", end="")
+        print('\r\nDownload ' + data_name + ' from repository... ', sep="; ", end="")
         if not os.path.exists(folder):
             os.makedirs(folder)
         data = wget.download(url, out=folder, bar=bar_progress)
@@ -114,7 +114,7 @@ class TransferAssets:
                 for filename in files:
                     print(
                         '\r\nStart transfer ' + filename + ' from '
-                                                           '' + self.repository + self.type + ' to ' + self.repository + '.release... ')
+                                                           '' + self.repository + self.type + ' to ' + self.repository + '.release... ', sep="; ", end="")
                     url_release: str = self.base_url + '/repository/' \
                                                        '' + self.repository + '.release/' + self.select_path + '' \
                                                                                                                '' + address.replace(
@@ -126,20 +126,17 @@ class TransferAssets:
                     push_response = requests.put(url_release, data=open(address + '/' + filename, 'rb'), auth=self.auth)
 
                     if push_response.status_code == 201:
-                        print(colorama.Fore.GREEN + '\r\nSuccess')
+                        print(colorama.Fore.GREEN + 'Success\r\n')
                         print('\r\nDelete ' + filename + ' from ' + self.repository + self.type + '...')
                         self.delete_asset(url_delete, 204)
                     else:
-                        print(
-                            colorama.Fore.RED + '\r\nCan\'t transfer the '
-                                                '' + filename + ' from '
-                                                                '' + self.repository + self.type + ' to ' + self.repository + '.release')
+                        print(colorama.Fore.RED + 'FAILED\r\n')
                         self.delete_temp_folder()
                         exit(0)
         else:
             for data in os.listdir(self.temp_dir):
                 print('\r\nStart transfer ' + data + ' from ' + self.repository + self.type + ' to '
-                                                                                              '' + self.repository + '.release...')
+                                                                                              '' + self.repository + '.release... ', sep="; ", end="")
                 url_release: str = self.base_url + '/repository/' \
                                                    '' + self.repository + '.release/' \
                                                                           '' + self.select_path + '/' + data
@@ -150,15 +147,11 @@ class TransferAssets:
                                              data=open(self.temp_dir + '/' + data, 'rb'),
                                              auth=self.auth)
                 if push_response.status_code == 200:
-                    print(colorama.Fore.GREEN + '\r\nSuccess\r\n')
+                    print(colorama.Fore.GREEN + 'Success\r\n')
                     print('\r\nDelete ' + data + ' from ' + self.repository + self.type + '... \r\n')
                     self.delete_asset(url_delete, 200)
                 else:
-                    print(
-                        colorama.Fore.RED + '\r\nCan\'t transfer the '
-                                            '' + self.select_rpm + ' from '
-                                                                   '' + self.repository + self.type + ' to '
-                                                                                                      '' + self.repository + '.release')
+                    print(colorama.Fore.RED + 'FAILED\r\n')
                     self.delete_temp_folder()
                     exit(0)
 
@@ -176,11 +169,7 @@ class TransferAssets:
                     self.rpm_list.append(rpm)
                     print(str(i) + '. ' + rpm.replace(self.repository + '-', '').replace('.x86_64.rpm', ''))
                     i = i + 1
-                #else:
-                #    index = item['path'].find('/')
-                #    node = item['path'][index:]
-                #    node = node[1:]
-                #    self.node_list.append(node)
+
         if len(self.rpm_list) == 0:
             print(colorama.Fore.RED + 'No data for transfer')
             exit(0)
