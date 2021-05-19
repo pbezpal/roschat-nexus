@@ -86,7 +86,7 @@ while True:
             else:
                 type_repo = '.pre-release'
             break
-    elif project == 'q':
+    elif type == 'q':
         exit(0)
 
 transfer = TransferAssets(base_url, repository, type_repo, auth, temp_dir)

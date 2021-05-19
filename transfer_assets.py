@@ -31,11 +31,16 @@ class TransferAssets:
     rpm_list: list = []
     path_list: list = []
     node_list: list = []
-    client_rpm_list: list = []
-    client_deb_list: list = []
-    client_win_32_list: list = []
-    client_win_64_list: list = []
-    client_mac_list: list = []
+    client_rpm_files: list = []
+    client_rpm_urls: list = []
+    client_deb_files: list = []
+    client_deb_urls: list = []
+    client_win_32_files: list = []
+    client_win_32_urls: list = []
+    client_win_64_files: list = []
+    client_win_64_urls: list = []
+    client_mac_files: list = []
+    client_mac_urls: list = []
     select_rpm: str = None
     select_node_rpm: str = None
     select_path: str = None
@@ -114,7 +119,8 @@ class TransferAssets:
                 for filename in files:
                     print(
                         '\r\nStart transfer ' + filename + ' from '
-                                                           '' + self.repository + self.type + ' to ' + self.repository + '.release... ', sep="; ", end="")
+                                                           '' + self.repository + self.type + ' to ' + self.repository + '.release... ',
+                        sep="; ", end="")
                     url_release: str = self.base_url + '/repository/' \
                                                        '' + self.repository + '.release/' + self.select_path + '' \
                                                                                                                '' + address.replace(
@@ -136,7 +142,8 @@ class TransferAssets:
         else:
             for data in os.listdir(self.temp_dir):
                 print('\r\nStart transfer ' + data + ' from ' + self.repository + self.type + ' to '
-                                                                                              '' + self.repository + '.release... ', sep="; ", end="")
+                                                                                              '' + self.repository + '.release... ',
+                      sep="; ", end="")
                 url_release: str = self.base_url + '/repository/' \
                                                    '' + self.repository + '.release/' \
                                                                           '' + self.select_path + '/' + data
@@ -208,41 +215,47 @@ class TransferAssets:
         self.upload_assets_to_release()
 
     def client_menu(self, i, items):
+        first_url: str = "http://10.10.199.217:8080/repository/roschat-client.develop/"
         for item in items['items']:
             index = item['path'].rfind('/')
+            time_path: str = item['path'].split('/')[0]
+            linux_dir: str = first_url + time_path + "/linux/"
+            mac_dir: str = first_url + time_path + "/macos/x64/"
+            win_32_dir = first_url + time_path + "/windows/ia32/"
+            win_64_dir = first_url + time_path + "/windows/x64/"
             if not item['path'].find('deb') == -1:
-                client = item['path'][index:].replace('/', '').replace('roschat_', '').replace('_amd64.deb', '')
-                self.path_list.append(item['path'].partition('/')[0])
-                print(str(i) + '. ' + client)
-                self.client_deb_list.append(item['path'][index:].replace('/', ''))
-                self.client_deb_list.append(item['downloadUrl'])
+                ver_client = item['path'][index:].replace('/', '').replace('roschat_', '').replace('_amd64.deb', '')
+                print(str(i) + '. ' + ver_client)
+                self.client_deb_files.append(item['path'][index:].replace('/', ''))
+                self.client_deb_urls.append(item['downloadUrl'])
+                rpm_file: str = 'roschat-' + ver_client + '.x86_64.rpm'
+                self.client_rpm_files.append(rpm_file)
+                self.client_rpm_urls.append(linux_dir + rpm_file)
+                win_32_file: str = 'roschat-' + ver_client + '.ia32.exe'
+                self.client_win_32_files.append(win_32_file)
+                self.client_win_32_urls.append(win_32_dir + win_32_file)
+                win_64_file: str = 'roschat-' + ver_client + '.x64.exe'
+                self.client_win_64_files.append(win_64_file)
+                self.client_win_64_urls.append(win_64_dir + win_64_file)
+                mac_file: str = 'roschat-' + ver_client + '.dmg'
+                self.client_mac_files.append(mac_file)
+                self.client_mac_urls.append(mac_dir + mac_file)
+                self.path_list.append(time_path)
                 i = i + 1
-            elif not item['path'].find('rpm') == -1:
-                self.client_rpm_list.append(item['path'][index:].replace('/', ''))
-                self.client_rpm_list.append(item['downloadUrl'])
-            elif not item['path'].find('ia32.exe') == -1:
-                self.client_win_32_list.append(item['path'][index:].replace('/', ''))
-                self.client_win_32_list.append(item['downloadUrl'])
-            elif not item['path'].find('x64.exe') == -1:
-                self.client_win_64_list.append(item['path'][index:].replace('/', ''))
-                self.client_win_64_list.append(item['downloadUrl'])
-            elif not item['path'].find('dmg') == -1:
-                self.client_mac_list.append(item['path'][index:].replace('/', ''))
-                self.client_mac_list.append(item['downloadUrl'])
 
-        if len(self.client_deb_list) == 0:
+        if len(self.client_deb_files) == 0:
             print(colorama.Fore.RED + 'No data for transfer')
             exit(0)
-        elif len(self.client_rpm_list) == 0:
+        elif len(self.client_rpm_files) == 0:
             print(colorama.Fore.RED + 'No data for transfer')
             exit(0)
-        elif len(self.client_win_32_list) == 0:
+        elif len(self.client_win_32_files) == 0:
             print(colorama.Fore.RED + 'No data for transfer')
             exit(0)
-        elif len(self.client_win_64_list) == 0:
+        elif len(self.client_win_64_files) == 0:
             print(colorama.Fore.RED + 'No data for transfer')
             exit(0)
-        elif len(self.client_mac_list) == 0:
+        elif len(self.client_mac_files) == 0:
             print(colorama.Fore.RED + 'No data for transfer')
             exit(0)
         return i
@@ -269,30 +282,25 @@ class TransferAssets:
                 exit(0)
 
         self.select_path = self.path_list[ver]
-
-        if ver > 1:
-            ver = ver + 3
-
         self.branch = \
-        self.client_deb_list[ver].replace('/', '').replace('roschat_', '').replace('_amd64.deb', '').rpartition('.')[0]
-        self.select_path = self.path_list[ver]
+        self.client_deb_files[ver].replace('/', '').replace('roschat_', '').replace('_amd64.deb', '').rpartition('.')[0]
         self.source_code = SourceCode(self.auth, self.branch, self.repository, self.select_path)
         self.source_code.upload_source_to_nexus()
 
-        self.get_asset(self.client_deb_list[ver],
-                       self.client_deb_list[ver + 1],
+        self.get_asset(self.client_deb_files[ver],
+                       self.client_deb_urls[ver],
                        linux_dir)
-        self.get_asset(self.client_rpm_list[ver],
-                       self.client_rpm_list[ver + 1],
+        self.get_asset(self.client_rpm_files[ver],
+                       self.client_rpm_urls[ver],
                        linux_dir)
-        self.get_asset(self.client_win_32_list[ver],
-                       self.client_win_32_list[ver + 1],
+        self.get_asset(self.client_win_32_files[ver],
+                       self.client_win_32_urls[ver],
                        win_32_dir)
-        self.get_asset(self.client_win_64_list[ver],
-                       self.client_win_64_list[ver + 1],
+        self.get_asset(self.client_win_64_files[ver],
+                       self.client_win_64_urls[ver],
                        win_64_dir)
-        self.get_asset(self.client_mac_list[ver],
-                       self.client_mac_list[ver + 1],
+        self.get_asset(self.client_mac_files[ver],
+                       self.client_mac_urls[ver],
                        mac_dir)
 
         self.upload_assets_to_release()
