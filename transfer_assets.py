@@ -133,7 +133,7 @@ class TransferAssets:
 
                     if push_response.status_code == 201:
                         print(colorama.Fore.GREEN + 'Success\r\n')
-                        print('\r\nDelete ' + filename + ' from ' + self.repository + self.type + '...')
+                        print('\r\nDelete ' + filename + ' from ' + self.repository + self.type + '... ', sep="; ", end="")
                         self.delete_asset(url_delete, 204)
                     else:
                         print(colorama.Fore.RED + 'FAILED\r\n')
@@ -155,7 +155,7 @@ class TransferAssets:
                                              auth=self.auth)
                 if push_response.status_code == 200:
                     print(colorama.Fore.GREEN + 'Success\r\n')
-                    print('\r\nDelete ' + data + ' from ' + self.repository + self.type + '... \r\n')
+                    print('\r\nDelete ' + data + ' from ' + self.repository + self.type + '... ', sep="; ", end="")
                     self.delete_asset(url_delete, 200)
                 else:
                     print(colorama.Fore.RED + 'FAILED\r\n')
