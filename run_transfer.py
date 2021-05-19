@@ -42,7 +42,6 @@ while i < 3:
     else:
         auth = (login, password)
         repo_response = requests.get(base_url + '/service/rest/v1/repositories', auth=auth)
-        print(repo_response.status_code)
         if repo_response.status_code == 401:
             print('\r\nWrong login or password, please try again')
         else:
